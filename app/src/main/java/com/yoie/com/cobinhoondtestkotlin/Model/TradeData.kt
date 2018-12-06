@@ -15,11 +15,12 @@ class TradeData : BaseObservable() {
     @Expose
     @get:Bindable
     var pairID: String? = null
-
-    @get:Bindable
-    var ratio: () -> String = {
-        ((lastTradePrice!!.toDouble()?.minus(m24Open!!.toDouble()) )/m24Open!!.toDouble()).toString()
-    }
+    val ratio: String
+        @Bindable get() {
+            if(m24Open!!.equals("0"))
+                return "0"
+            return ((lastTradePrice!!.toDouble()?.minus(m24Open!!.toDouble()) )/m24Open!!.toDouble()).toString()
+        }
 
     @SerializedName("timestamp")
     @Expose
