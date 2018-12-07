@@ -18,14 +18,16 @@
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="96dp"
             android:layout_marginTop="8dp"
             android:text="@{obj.lastTradePrice}"
-            app:layout_constraintBottom_toTopOf="@+id/textView3"
+            android:textSize="13dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0"
-            tools:text="fffffffffffffffffffffffffffffffffffffffffffffffffff" />
+            tools:text="ffffffffffffff" />
 
         <TextView
             android:id="@+id/textView3"
@@ -43,6 +45,24 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0"
             tools:text="ffffffffffffffffffffffffffff" />
+
+        <TextView
+            android:id="@+id/pair_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@{obj.pairID}"
+            android:textSize="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.03"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.555"
+            tools:text="ididididiididi" />
     </android.support.constraint.ConstraintLayout>
 
 

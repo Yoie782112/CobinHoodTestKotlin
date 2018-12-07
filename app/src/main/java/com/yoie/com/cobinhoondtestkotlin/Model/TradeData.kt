@@ -6,8 +6,15 @@ import com.google.gson.annotations.SerializedName
 
 import android.databinding.BaseObservable
 import android.databinding.Bindable
+import android.graphics.Color
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
+import java.text.DecimalFormat
 
-
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.drafts.Draft;
+import org.java_websocket.handshake.ServerHandshake;
 
 class TradeData : BaseObservable() {
 
@@ -15,11 +22,17 @@ class TradeData : BaseObservable() {
     @Expose
     @get:Bindable
     var pairID: String? = null
-    val ratio: String
+    val ratio: SpannableStringBuilder
         @Bindable get() {
-            if(m24Open!!.equals("0"))
-                return "0"
-            return ((lastTradePrice!!.toDouble()?.minus(m24Open!!.toDouble()) )/m24Open!!.toDouble()).toString()
+            return if(m24Open!!.toDouble() == 0.0)   SpannableStringBuilder("0.0").apply{setSpan(ForegroundColorSpan(Color.BLACK),0,2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)}
+            else{
+                var dRatio = (lastTradePrice!!.toDouble()-(m24Open!!.toDouble()) )/m24Open!!.toDouble()
+                val df = DecimalFormat("#.##")
+                var sRatio = df.format(dRatio).toString()
+                if(dRatio == 0.0) SpannableStringBuilder(sRatio).apply{setSpan(ForegroundColorSpan(Color.BLACK),0,sRatio.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)}
+                else if(dRatio < 0.0) SpannableStringBuilder(sRatio).apply{setSpan(ForegroundColorSpan(Color.GREEN),0,sRatio.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)}
+                else SpannableStringBuilder(sRatio).apply{setSpan(ForegroundColorSpan(Color.RED),0,sRatio.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)}
+            }
         }
 
     @SerializedName("timestamp")
