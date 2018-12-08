@@ -20,25 +20,68 @@ import com.yoie.com.cobinhoondtestkotlin.WebService.ApiClient
 import com.yoie.com.cobinhoondtestkotlin.WebService.ApiResponse
 import com.yoie.com.cobinhoondtestkotlin.WebService.NetworkScheduler
 import android.support.v7.widget.GridLayoutManager
-import android.util.Log
+import org.java_websocket.client.WebSocketClient
+import org.java_websocket.drafts.Draft_6455
+import org.java_websocket.handshake.ServerHandshake
+import org.json.JSONObject
+import java.net.URI
 
 
 class MainActivity : RxAppCompatActivity() {
     var mDatas = mutableListOf<TradeData>()
     var mRecyclerView: RecyclerView? = null
     var mAdapter: TradeListAdapter? = null
+
+    val mWs = object : WebSocketClient(URI("wss://ws.cobinhood.com/v2/ws"), Draft_6455()) {
+        override fun onMessage(message: String) {
+            val obj = JSONObject(message)
+            var tempH = obj.getJSONArray("h")
+            var tempD = obj.getJSONArray("d")
+            if(tempH[2].toString().equals("s") || tempH[2].toString().equals("u")){
+                for(i in 0 .. mDatas.size-1){
+                    if(tempH[0].toString().contains(mDatas[i].pairID!!)){
+                        val x = TradeData().apply {
+                            pairID = mDatas[i].pairID
+                            timestamp = tempD[0].toString().toDouble()
+                            mHighestBid = tempD[1].toString()
+                            mLowestAsk = tempD[2].toString()
+                            m24hVolume = tempD[3].toString()
+                            m24hHigh = tempD[4].toString()
+                            m24hLow = tempD[5].toString()
+                            m24Open = tempD[6].toString()
+                            lastTradePrice = tempD[7].toString()
+                        }
+                        mDatas.set(i,x)
+                        mAdapter!!.notifyDataSetChanged()
+                        break
+                    }
+
+                }
+            }
+        }
+
+        override fun onOpen(handshake: ServerHandshake) {
+            subscribeAllPairID()
+        }
+
+        override fun onClose(code: Int, reason: String, remote: Boolean) {
+        }
+
+        override fun onError(ex: Exception) {
+        }
+
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         mRecyclerView = findViewById<View>(R.id.recycler_view) as RecyclerView
-
-        var x = "24.5"
-        var y = "12.2"
-        var z = (x.toDouble()/y.toDouble()).toString()
-        Log.d("test", z)
+        var layoutManager = GridLayoutManager(this, 2)
+        mRecyclerView!!.layoutManager = layoutManager
+        mAdapter = TradeListAdapter(mDatas)
+        mAdapter!!.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {})
+        mRecyclerView!!.adapter = mAdapter
         ApiClient.instance.init()
         refreshData()
-
     }
 
 
@@ -53,11 +96,16 @@ class MainActivity : RxAppCompatActivity() {
                         for (item in dataA!!) {
                             val jsonObj = Gson().toJsonTree(item).asJsonObject
                             val temp = Gson().fromJson<TradeData>(jsonObj, TradeData::class.java)
-                            mDatas?.add(temp)
+                            mDatas.add(temp)
                         }
-
-                        if(mDatas?.size!! >= 0)
-                            refresh()
+                        if(mDatas.size >= 0){
+                            mAdapter!!.notifyDataSetChanged()
+                            object : Thread(){
+                                override fun run() {
+                                    mWs.connect()
+                                }
+                            }.start()
+                        }
                     }
 
                     override fun failure(statusCode: Int) {
@@ -65,17 +113,16 @@ class MainActivity : RxAppCompatActivity() {
                     }
                 })
     }
+    fun subscribeAllPairID(){
+        for(i in 0.. mDatas.size-1){
+            val obj = JSONObject().apply {
+                put("action", "subscribe")
+                put("type", "ticker")
+                put("trading_pair_id", mDatas[i].pairID)
+            }
+            mWs.send(obj.toString())
 
-    fun refresh() {
-        //var layoutManager = LinearLayoutManager(this)
-        var layoutManager = GridLayoutManager(this, 2)
-
-        mRecyclerView!!.layoutManager = layoutManager
-        mAdapter = TradeListAdapter(mDatas!!)
-        mRecyclerView!!.adapter = mAdapter
-        mRecyclerView!!.addItemDecoration(
-                DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
-
+        }
     }
 
 

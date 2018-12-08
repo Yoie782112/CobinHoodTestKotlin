@@ -31,13 +31,13 @@ class TradeListAdapter(trades: MutableList<TradeData>) : RecyclerView.Adapter<Tr
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = TradeItemBinding.inflate(inflater, parent, false)
-        //binding.getRoot().setOnClickListener(this);  //监听点击事件
+        //binding.getRoot().setOnClickListener(this);
         return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bindto(trades[position])
-        holder.binding!!.root.tag = trades[position]  //方便在别的地方调用
+        holder.binding!!.root.tag = trades[position]
     }
 
     override fun getItemCount(): Int {

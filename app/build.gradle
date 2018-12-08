@@ -34,8 +34,21 @@ android {
     }
 }
 
-repositories {
+
+
+
+
+allprojects {
+    repositories {
+        jcenter()
+        mavenCentral()
+        maven {
+                    url 'http://mvnrepo.xxx.com/mvn/repository'
+                }
+            }
 }
+
+
 
 
 
@@ -66,13 +79,13 @@ dependencies {
     api 'com.trello.rxlifecycle2:rxlifecycle-components:2.1.0'
     api 'com.trello.rxlifecycle2:rxlifecycle-navi:2.1.0'
     api 'com.trello.rxlifecycle2:rxlifecycle-android-lifecycle:2.1.0'
-    allprojects {
-        repositories {
-            mavenCentral()
-            jcenter()
-            maven { url 'https://dl.google.com/dl/android/maven2/' }
-        }
-    }
+//    allprojects {
+//        repositories {
+//            mavenCentral()
+//            jcenter()
+//            maven { url 'https://dl.google.com/dl/android/maven2/' }
+//        }
+//    }
     api 'com.trello.rxlifecycle2:rxlifecycle-kotlin:2.1.0'
     api 'com.trello.rxlifecycle2:rxlifecycle-android-lifecycle-kotlin:2.1.0'
 

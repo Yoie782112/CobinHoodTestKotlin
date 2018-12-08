@@ -16,7 +16,9 @@ import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft;
 import org.java_websocket.handshake.ServerHandshake;
 
-class TradeData : BaseObservable() {
+class TradeData() : BaseObservable() {
+
+
 
     @SerializedName("trading_pair_id")
     @Expose
@@ -24,14 +26,14 @@ class TradeData : BaseObservable() {
     var pairID: String? = null
     val ratio: SpannableStringBuilder
         @Bindable get() {
-            return if(m24Open!!.toDouble() == 0.0)   SpannableStringBuilder("0.0").apply{setSpan(ForegroundColorSpan(Color.BLACK),0,2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)}
+            return if(m24Open!!.toDouble() == 0.0)   SpannableStringBuilder("0.0").apply{setSpan(ForegroundColorSpan(Color.WHITE),0,2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)}
             else{
                 var dRatio = (lastTradePrice!!.toDouble()-(m24Open!!.toDouble()) )/m24Open!!.toDouble()
                 val df = DecimalFormat("#.##")
                 var sRatio = df.format(dRatio).toString()
-                if(dRatio == 0.0) SpannableStringBuilder(sRatio).apply{setSpan(ForegroundColorSpan(Color.BLACK),0,sRatio.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)}
+                if(dRatio == 0.0) SpannableStringBuilder(sRatio).apply{setSpan(ForegroundColorSpan(Color.WHITE),0,sRatio.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)}
                 else if(dRatio < 0.0) SpannableStringBuilder(sRatio).apply{setSpan(ForegroundColorSpan(Color.GREEN),0,sRatio.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)}
-                else SpannableStringBuilder(sRatio).apply{setSpan(ForegroundColorSpan(Color.RED),0,sRatio.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)}
+                else SpannableStringBuilder("+" + sRatio).apply{setSpan(ForegroundColorSpan(Color.RED),0,sRatio.length+1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)}
             }
         }
 
@@ -41,11 +43,11 @@ class TradeData : BaseObservable() {
 
     @SerializedName("highest_bid")
     @Expose
-    private var mHighestBid: String? = null
+    var mHighestBid: String? = null
 
     @SerializedName("lowest_ask")
     @Expose
-    private var mLowestAsk: String? = null
+    var mLowestAsk: String? = null
 
     @SerializedName("24h_volume")
     @Expose
@@ -68,21 +70,6 @@ class TradeData : BaseObservable() {
     @get:Bindable
     var lastTradePrice: String? = null
 
-    fun getmHighestBid(): String? {
-        return mHighestBid
-    }
-
-    fun setmHighestBid(mHighestBid: String) {
-        this.mHighestBid = mHighestBid
-    }
-
-    fun getmLowestAsk(): String? {
-        return mLowestAsk
-    }
-
-    fun setmLowestAsk(mLowestAsk: String) {
-        this.mLowestAsk = mLowestAsk
-    }
 
 
 }

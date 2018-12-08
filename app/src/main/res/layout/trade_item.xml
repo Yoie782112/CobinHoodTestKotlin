@@ -11,6 +11,7 @@
     <android.support.constraint.ConstraintLayout
         android:background="@drawable/itemboder"
         android:layout_width="match_parent"
+
         android:layout_height="60dp">
 
 
@@ -22,6 +23,7 @@
             android:layout_marginStart="96dp"
             android:layout_marginTop="8dp"
             android:text="@{obj.lastTradePrice}"
+            android:textColor="#FFFFFF"
             android:textSize="13dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -37,6 +39,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:textColor="#FFFFFF"
             android:text="@{obj.ratio}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -55,6 +58,8 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="@{obj.pairID}"
+            android:textColor="#FFFFFF"
+
             android:textSize="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
